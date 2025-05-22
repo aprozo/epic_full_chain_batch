@@ -4,7 +4,7 @@
 # It also handles the simulation and analysis of events based on user-defined parameters.
 
 # example of usage in BASH(!) shell  - not native .csh shell:
-# TILE_SIZE=15 N_LAYERS=15 SCINTILLATOR_THICKNESS=0.5 ABSORBER_THICKNESS=5 MOMENTUM=0.5 ./run.sh
+# TILE_SIZE=15 N_LAYERS=15 SCINTILLATOR_THICKNESS=0.5 ABSORBER_THICKNESS=5 MOMENTUM=0.5 ./run_submit.sh
 
 # in tcsh shell:
 # setenv TILE_SIZE 15
@@ -371,7 +371,9 @@ EOF
 generate_main_script() {
     log "Generating main simulation script..."
 
-    cat >my_generated_script.sh <<'EOF'
+    generated_script="generated_script_$NHCAL_CONFIG.sh"
+
+    cat >$generated_script <<'EOF'
 #!/bin/bash
 cd OUTPUT_DIR_PLACEHOLDER
 # Parse arguments
@@ -465,14 +467,14 @@ cat << 'EOFINNER' | EICSHELL_PLACEHOLDER
 EOFINNER
 EOF
     # Replace placeholders with actual values
-    sed -i "s|OUTPUT_DIR_PLACEHOLDER|$output_dir|g" my_generated_script.sh
-    sed -i "s|MY_EPIC_DIR_PLACEHOLDER|$my_epic_dir|g" my_generated_script.sh
-    sed -i "s|MY_EICRECON_DIR_PLACEHOLDER|$my_eicrecon_dir|g" my_generated_script.sh
-    sed -i "s|CURRENT_DIR_PLACEHOLDER|$current_dir|g" my_generated_script.sh
-    sed -i "s|EICSHELL_PLACEHOLDER|$EICSHELL|g" my_generated_script.sh
-    sed -i "s|DETECTOR_CONFIG_PLACEHOLDER|$DETECTOR_CONFIG|g" my_generated_script.sh
+    sed -i "s|OUTPUT_DIR_PLACEHOLDER|$output_dir|g" $generated_script
+    sed -i "s|MY_EPIC_DIR_PLACEHOLDER|$my_epic_dir|g" $generated_script
+    sed -i "s|MY_EICRECON_DIR_PLACEHOLDER|$my_eicrecon_dir|g" $generated_script
+    sed -i "s|CURRENT_DIR_PLACEHOLDER|$current_dir|g" $generated_script
+    sed -i "s|EICSHELL_PLACEHOLDER|$EICSHELL|g" $generated_script
+    sed -i "s|DETECTOR_CONFIG_PLACEHOLDER|$DETECTOR_CONFIG|g" $generated_script
 
-    chmod +x my_generated_script.sh
+    chmod +x $generated_script
 
     log "Main simulation script generated successfully"
 }
@@ -494,10 +496,16 @@ Requirements            = (CPU_Speed >= 1)
 Rank                    = CPU_Speed
 Initialdir              = $current_dir
 Arguments               = \$(Cluster) \$(Process) $MOMENTUM $PHI $THETA $PARTICLE $NUMBER_OF_EVENTS
-Executable              = my_generated_script.sh
+Executable              = $generated_script
 Error                   = $output_dir/log/error\$(Cluster)_\$(Process).err
 Output                  = $output_dir/log/out\$(Cluster)_\$(Process).out
 Log                     = $output_dir/log/log\$(Cluster)_\$(Process).log
+# File transfer settings
+Should_Transfer_Files   = YES
+When_To_Transfer_Output = ON_EXIT
+Transfer_Input_Files    = $generated_script
+Transfer_Output_Files   = ""
+
 Queue $JOBS
 EOF
     if [[ ! -f "$temp_job" ]]; then
