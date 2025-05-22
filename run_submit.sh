@@ -451,7 +451,7 @@ cat << 'EOFINNER' | EICSHELL_PLACEHOLDER
 
     # Run analysis
     echo "Running ROOT analysis..."
-    analysis_script="CURRENT_DIR_PLACEHOLDER/readHCalRecoReader.C"
+    analysis_script="CURRENT_DIR_PLACEHOLDER/example_macro.C"
     if [[ ! -f "$analysis_script" ]]; then
         echo "Analysis script not found: $analysis_script"
         exit 1
