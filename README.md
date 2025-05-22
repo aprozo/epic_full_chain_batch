@@ -11,7 +11,7 @@ TILE_SIZE=12 N_LAYERS=11 SCINTILLATOR_THICKNESS=0.8 ABSORBER_THICKNESS=3 MOMENTU
 tile_sizes=(10 12 15)
 for size in "${tile_sizes[@]}"; do
     export TILE_SIZE=$size
-    ./run.sh
+    ./run_submit.sh
 done
 ```
 5. This will set everything for you, including `eic-shell`, `epic` repository and `eicrecon`.
