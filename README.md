@@ -3,18 +3,26 @@
 1. Login to eic node
 2. Run this command with different parameters (it will use default if not specified)
 ```bash
-TILE_SIZE=12 N_LAYERS=11 SCINTILLATOR_THICKNESS=0.8 ABSORBER_THICKNESS=3 MOMENTUM=1 ./run_submit.sh
+env TILE_SIZE=10 N_LAYERS=10 SCINTILLATOR_THICKNESS=2.4 ABSORBER_THICKNESS=4 MOMENTUM=1 ./run_submit.sh
 ```
 3. You could modify DEFAULT parameters inside the script.
 4. Example in loop:
 ``` bash
-tile_sizes=(10 12 15)
+tile_sizes=(5 10 12 15)
 for size in "${tile_sizes[@]}"; do
     export TILE_SIZE=$size
     ./run_submit.sh
 done
 ```
 5. This will set everything for you, including `eic-shell`, `epic` repository and `eicrecon`.
+Locations :
+ - `eic-shell` will be created in `$HOME/eic/eic-shell/`
+ And paths for output, [epic](https://github.com/eic/epic) and [eicrecon](https://github.com/eic/eicrecon) directories will be:
+ ```bash
+output_dir="/gpfs02/eic/${USER}/output/${NHCAL_CONFIG}/${SIM_CONFIG}"
+my_epic_dir="/gpfs02/eic/${USER}/epic"
+my_eicrecon_dir="/gpfs02/eic/${USER}/EICrecon"
+```
 And run in batch mode full chain:
 ```bash
 ddsim SIMFILE

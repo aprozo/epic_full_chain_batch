@@ -24,19 +24,20 @@
 # detector parameters
 DEFAULT_TILE_SIZE=10               # cm
 DEFAULT_ABSORBER_THICKNESS=4       # cm
-DEFAULT_SCINTILLATOR_THICKNESS=0.4 # cm
+DEFAULT_SCINTILLATOR_THICKNESS=2.4 # cm
 DEFAULT_N_LAYERS=10                # 10 layers
 DEFAULT_LAYER_GAP=0.1              # cm
 MAXIMUM_NHCAL_LENGTH=70            # cm
-DEFAULT_NHCAL_LENGTH=45            # cm
+#calculate default length
+DEFAULT_NHCAL_LENGTH=$(echo "$DEFAULT_N_LAYERS * ($DEFAULT_ABSORBER_THICKNESS + $DEFAULT_SCINTILLATOR_THICKNESS + $DEFAULT_LAYER_GAP)" | bc)
 
 # simulation parameters
 DEFAULT_MOMENTUM=1          # 1 GeV
 DEFAULT_PHI=45              # 45 degrees
 DEFAULT_THETA=170           # 170 degrees
-DEFAULT_PARTICLE=neutron    # "neutron" or "proton"
+DEFAULT_PARTICLE=neutron    # neutron , proton, mu-, pi+
 DEFAULT_NUMBER_OF_EVENTS=10 # 10 events per job
-DEFAULT_JOBS=10             # 10 job
+DEFAULT_JOBS=10             # 10 jobs
 
 # user-defined values - can be set via command line or environment variables
 TILE_SIZE=${TILE_SIZE:-$DEFAULT_TILE_SIZE}
@@ -290,7 +291,7 @@ compile_custom_epic() {
 
     log "Modifying EPIC configuration..."
     # Modify EPIC configuration
-    local nhcal_config="$work_epic_dir/compact/hcal/backward.xml"
+    local nhcal_config="$work_epic_dir/compact/hcal/backward_template.xml"
     local epic_definitions="$work_epic_dir/compact/definitions.xml"
 
     # More robust sed patterns with backup
