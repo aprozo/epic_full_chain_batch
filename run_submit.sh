@@ -303,7 +303,7 @@ compile_custom_epic() {
     if [[ "$TILE_SIZE" != "$DEFAULT_TILE_SIZE" ]]; then
         local new_size="${TILE_SIZE}0 * mm"
         if sed -i "s/grid_size_x=\"[^\"]*\"/grid_size_x=\"$new_size\"/" "$nhcal_config" &&
-            sed -i "s/grid_size_y =\"[^\"]*\"/grid_size_y=\"$new_size\"/" "$nhcal_config"; then # extra space is needed in "grid_size_y =" - bug in xml
+            sed -i "s/grid_size_y=\"[^\"]*\"/grid_size_y=\"$new_size\"/" "$nhcal_config"; then #
             log "Tile size updated to $new_size"
         else
             error "Failed to update tile size in $nhcal_config"
